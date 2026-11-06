@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7f4">
+  <title>LessonCraft — AI lesson studio</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="LessonCraft home">
+      <span class="brand-mark">L</span>
+      <span>lessoncraft<span class="brand-ai">.ai</span></span>
+    </a>
+    <div class="topbar-right">
+      <button id="new-lesson" class="button button-quiet" type="button">＋ New lesson</button>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-heading">
+        <span class="eyebrow">WORKSPACE</span>
+        <button id="refresh-saved" class="icon-button" type="button" aria-label="Refresh saved lessons" title="Refresh">↻</button>
+      </div>
+      <nav id="saved-lessons" class="saved-list" aria-label="Saved lessons"></nav>
+      <div class="sidebar-note">
+        <span class="note-icon">✳</span>
+        <p>Research-backed drafts, always reviewed by a human before teaching.</p>
+      </div>
+      <div class="sidebar-footer">LOCAL WORKSPACE <span>·</span> YOUR LESSONS STAY IN THIS BROWSER</div>
+    </aside>
+
+    <section class="workspace">
+      <section id="builder" class="builder">
+        <div class="page-intro">
+          <div class="eyebrow">LESSON DESIGN STUDIO <span class="intro-line"></span> 45-MINUTE PLANNER</div>
+          <h1>Make a lesson<br><span>worth learning.</span></h1>
+          <p>Start with a learning goal. Get a structured, research-informed draft to make your own.</p>
+        </div>
+
+        <form id="lesson-form" class="input-card">
+          <label for="lesson-title">Lesson title <span class="label-hint">What are you teaching?</span></label>
+          <input id="lesson-title" name="title" maxlength="180" placeholder="e.g. HTTP Requests and Responses" required>
+          <label for="learning-objective">Learning objective <span class="label-hint">What will learners be able to do?</span></label>
+          <textarea id="learning-objective" name="objective" maxlength="500" rows="3" placeholder="e.g. Explain GET and POST methods and distinguish between 2xx, 4xx, and 5xx response status categories." required></textarea>
+          <div class="form-bottom">
+            <span class="form-footnote">✳ &nbsp;Every lesson is planned for exactly 45 minutes.</span>
+            <button id="generate-button" class="button button-primary" type="submit"><span>Generate lesson</span><span class="button-arrow">↗</span></button>
+          </div>
+          <div id="form-error" class="form-error" role="alert" hidden></div>
+        </form>
+
+        <div class="try-sample">
+          <span class="sample-label">NEED A STARTING POINT?</span>
+          <button type="button" class="sample-chip" data-sample="http">Try: HTTP methods &amp; status codes <span>↗</span></button>
+          <button type="button" class="sample-chip" data-sample="photosynthesis">Try: Photosynthesis <span>↗</span></button>
+        </div>
+      </section>
+
+      <section id="lesson-view" class="lesson-view" hidden>
+        <div class="lesson-topline">
+          <button id="back-to-builder" class="back-link" type="button">← &nbsp; Lesson studio</button>
+          <div class="lesson-actions">
+            <span id="save-status" class="save-status">Saved locally</span>
+            <button id="save-button" class="button button-quiet" type="button">Save</button>
+            <button id="preview-button" class="button button-quiet" type="button">Preview</button>
+            <button id="export-button" class="button button-quiet" type="button">Export ↓</button>
+          </div>
+        </div>
+        <div id="notice-area"></div>
+        <div class="lesson-heading">
+          <span id="lesson-mode" class="lesson-mode"></span>
+          <h1 id="lesson-heading-title"></h1>
+          <p id="lesson-heading-objective"></p>
+          <div class="lesson-meta"><span>◷ &nbsp;45 minutes</span><span>✳ &nbsp;Instructor-led or self-paced</span></div>
+        </div>
+        <div class="tab-bar" role="tablist" aria-label="Lesson workspace">
+          <button class="tab active" id="tab-lesson" role="tab" aria-selected="true" aria-controls="panel-lesson">Lesson</button>
+          <button class="tab" id="tab-research" role="tab" aria-selected="false" aria-controls="panel-research">Research <span id="source-count" class="tab-count">0</span></button>
+          <button class="tab" id="tab-quality" role="tab" aria-selected="false" aria-controls="panel-quality">Quality checks <span class="qc-tab-indicator">2</span></button>
+        </div>
+        <div id="panel-lesson" class="tab-panel" role="tabpanel" aria-labelledby="tab-lesson">
+          <div class="editor-toolbar">
+            <div><span class="section-kicker">LESSON CONTENT</span><span class="edit-hint"> Click any field to edit · saves automatically</span></div>
+            <span class="editable-badge">✎ &nbsp;EDITABLE</span>
+          </div>
+          <div id="lesson-content" class="lesson-content"></div>
+        </div>
+        <div id="panel-research" class="tab-panel" role="tabpanel" aria-labelledby="tab-research" hidden>
+          <div class="panel-heading"><span class="section-kicker">RESEARCH TRAIL</span><h2>Sources to review</h2><p>Edit, add, or remove references before saving and exporting. Confirm each source supports the lesson before teaching.</p></div>
+          <div id="research-warnings"></div>
+          <div class="source-toolbar"><span class="section-kicker">REFERENCES</span><button id="add-reference" class="button button-quiet" type="button">＋ Add reference</button></div>
+          <div id="source-list" class="source-grid"></div>
+          <div class="video-section">
+            <span class="section-kicker">SUPPLEMENTARY VIDEOS</span>
+            <div id="video-list" class="video-list"></div>
+          </div>
+        </div>
+        <div id="panel-quality" class="tab-panel" role="tabpanel" aria-labelledby="tab-quality" hidden>
+          <div class="panel-heading"><span class="section-kicker">INDEPENDENT REVIEW PASSES</span><h2>Quality control</h2><p>Automated checks surface review priorities; they do not certify factual accuracy. Use the reports as a human-review checklist.</p></div>
+          <div class="qc-grid">
+            <section class="qc-card" aria-labelledby="research-qc-title">
+              <div class="qc-card-header"><span class="qc-icon research-icon">01</span><div><span class="section-kicker">SOURCE &amp; ACCURACY</span><h3 id="research-qc-title">Research review</h3></div></div>
+              <p class="qc-description">Source quality, verifiability, relevance, and completeness.</p>
+              <div id="research-audit" class="audit-list"></div>
+            </section>
+            <section class="qc-card" aria-labelledby="instructional-qc-title">
+              <div class="qc-card-header"><span class="qc-icon instructional-icon">02</span><div><span class="section-kicker">OBJECTIVE &amp; LEARNER EXPERIENCE</span><h3 id="instructional-qc-title">Instructional review</h3></div></div>
+              <p class="qc-description">Alignment, clarity, practical application, and use of time.</p>
+              <div id="instructional-audit" class="audit-list"></div>
+            </section>
+          </div>
+          <button id="rerun-qc" class="button button-quiet rerun-button" type="button">↻ &nbsp;Re-run both checks</button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <dialog id="preview-dialog" class="preview-dialog">
+    <div class="preview-header"><span class="section-kicker">LEARNER PREVIEW</span><button id="close-preview" class="icon-button" type="button" aria-label="Close preview">×</button></div>
+    <div id="preview-content" class="preview-content"></div>
+    <div class="preview-footer"><span>Instructor preview · 45 minutes</span><button id="preview-export" class="button button-primary" type="button">Export lesson ↓</button></div>
+  </dialog>
+</body>
+</html>

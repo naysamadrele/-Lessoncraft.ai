@@ -1,0 +1,12 @@
+{
+  "name": "lessoncraft-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A local AI-assisted lesson research, creation, and quality-review workspace.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
